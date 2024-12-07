@@ -1,0 +1,42 @@
+-- command to create database
+CREATE DATABASE bankpdb; 
+
+-- login into database
+USE bankpdb;
+
+-- 1. creating the users table
+CREATE TABLE users (
+user_id INT PRIMARY KEY auto_increment,
+first_name VARCHAR(255) NOT NULL,
+last_name VARCHAR(255) NOT NULL,
+email VARCHAR(255) NOT NULL UNIQUE,
+dob DATE NOT NULL,
+salt VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL,
+failed_count_attempts INT NOT NULL DEFAULT 0,
+last_login_date DATE
+);
+
+-- 2. creating the users account table
+CREATE TABLE account (
+account_id INT PRIMARY KEY AUTO_INCREMENT,
+user_id INT,
+account_number VARCHAR(255) NOT NULL,
+balance DECIMAL(20, 2) NOT NULL,
+is_active BOOLEAN NOT NULL,
+FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- 3. creating the users_account transaction table
+CREATE TABLE transaction(
+trans_id INT PRIMARY KEY AUTO_INCREMENT,
+user_id INT,
+account_id INT,
+amount DECIMAL(20,2) NOT NULL,
+from_account VARCHAR(255) NOT NULL,
+to_account VARCHAR(255) NOT NULL,
+trans_date DATE NOT NULL,
+trans_type ENUM('db', 'cd') NOT NULL,
+FOREIGN KEY (user_id) REFERENCES users(user_id)ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
